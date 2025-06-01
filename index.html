@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meowgic Hand</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="1.css">
+</head>
+<body>
+  <div id="container">
+    <img src="logo.png" alt="Meowgic Hand Logo" id="logo">
+    <div id="button-container">
+      <button id="enter-btn" class="btn">Enter</button>
+    </div>
+  </div>
+
+  <!-- 通用对话弹窗 -->
+  <div id="dialogue-window" class="window hidden">
+    <div class="window-header">
+      <span>Meowgic Hand</span>
+      <button class="close-btn">X</button>
+    </div>
+    <div class="window-body">
+      <p class="dialogue-text"></p>
+      <div class="btn-group">
+        <button id="next-btn" class="dialogue-btn">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 猫咪选择界面 -->
+<!-- 猫猫选择界面 -->
+<div id="cat-select-window" class="window hidden">
+  <div class="window-header">
+    <span>Choose your kitten</span>
+    <button class="close-btn">X</button>
+  </div>
+  <div class="window-body">
+    <p class="dialogue-text"></p> <!-- 👈 这里也加 dialogue-text -->
+    <div id="cat-container">
+      <div class="cat-option" data-cat="1"><img src="calicocat.png" alt="Cat 1"></div>
+      <div class="cat-option" data-cat="2"><img src="whitecat.png" alt="Cat 2"></div>
+      <div class="cat-option" data-cat="3"><img src="blackcat.png" alt="Cat 3"></div>
+    </div>
+    <input id="kitten-name" type="text" placeholder="Your kitten's name">
+    <button id="cat-next-btn" class="dialogue-btn">Next</button>
+  </div>
+</div>
+
+  <audio id="type-sound" src="172180__mathiasr__keyboard_typing_stream.wav"></audio>
+  <audio id="bgm" src="bgm.mp3" loop></audio>
+
+  <script src="1.js"></script>
+
+
+</body>
+</html>
