@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>撸猫测试 - Meowgic Hand</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Press Start 2P', monospace;
+    background: linear-gradient(135deg, #ffccf9, #99ccff);
+    min-height: 100vh;
+}
+
+.test-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.kitten {
+    width: 200px;
+    height: 200px;
+    background: #ff69b4;
+    border-radius: 50%;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.kitten:hover {
+    transform: scale(1.1);
+}
+
+.tool {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: 3px solid #ff69b4;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+    z-index: 999;
+    pointer-events: none;
+}
+
+.tool.active {
+    display: flex !important;
+    animation: toolPulse 1s ease-in-out infinite;
+}
+
+@keyframes toolPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.controls {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.btn {
+    margin: 5px;
+    padding: 10px 20px;
+    background: #ff69b4;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.btn:hover {
+    background: #ff1493;
+}
+
+.feedback {
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: #f0f8ff;
+    border-radius: 5px;
+    min-height: 50px;
+    font-size: 10px;
+}
+</style>
+</head>
+<body>
+<div class="test-container">
+    <h1 style="text-align: center; font-size: 16px; margin-bottom: 20px;">🐱 Cat Petting Function Test</h1>
+    
+    <div class="kitten" id="test-kitten">🐱</div>
+    
+    <!-- 工具 -->
+    <div id="brush-tool" class="tool">🖌️</div>
+    <div id="treat-tool" class="tool">🐟</div>
+    <div id="catnip-tool" class="tool">🌿</div>
+    
+    <div class="controls">
+        <button class="btn" onclick="testTool('brush')">🖌️ Brush</button>
+        <button class="btn" onclick="testTool('treat')">🐟 Treat</button>
+        <button class="btn" onclick="testTool('catnip')">🌿 Catnip</button>
+        <button class="btn" onclick="hideAllTools()">❌ Hide Tools</button>
+    </div>
+
+    <div class="feedback" id="feedback">
+        Click the buttons above to test tool display and interaction effects!
+    </div>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <p style="font-size: 10px; color: #666;">
+            This is a simplified test page to verify if the cat petting function works properly.<br>
+            If the functions work here, the code logic is fine - camera or gesture recognition might be the issue.
+        </p>
+        <a href="pet-cat.html" style="color: #ff69b4; text-decoration: none; font-size: 10px;">
+            → Return to full cat petting page
+        </a>
+    </div>
+</div>
+
+<script>
+let currentTool = null;
+let interactionCount = 0;
+const kittenName = 'Mochi';
+
+const brushTool = document.getElementById('brush-tool');
+const treatTool = document.getElementById('treat-tool');
+const catnipTool = document.getElementById('catnip-tool');
+const kitten = document.getElementById('test-kitten');
+const feedback = document.getElementById('feedback');
+
+// 测试工具显示
+function testTool(toolType) {
+    console.log(`测试工具: ${toolType}`);
+    
+    hideAllTools();
+    
+    let toolElement;
+    switch (toolType) {
+        case 'brush':
+            toolElement = brushTool;
+            break;
+        case 'treat':
+            toolElement = treatTool;
+            break;
+        case 'catnip':
+            toolElement = catnipTool;
+            break;
+    }
+    
+    if (toolElement) {
+        currentTool = toolType;
+        toolElement.classList.add('active');
+        toolElement.style.left = '50%';
+        toolElement.style.top = '50%';
+        toolElement.style.transform = 'translate(-50%, -50%)';
+        
+        // 触发互动效果
+        triggerInteraction(toolType);
+        
+        // 工具跟随鼠标
+        document.addEventListener('mousemove', updateToolPosition);
+    }
+}
+
+// 隐藏所有工具
+function hideAllTools() {
+    [brushTool, treatTool, catnipTool].forEach(tool => {
+        tool.classList.remove('active');
+    });
+    currentTool = null;
+    document.removeEventListener('mousemove', updateToolPosition);
+}
+
+// 更新工具位置
+function updateToolPosition(e) {
+    if (!currentTool) return;
+    
+    const toolElement = currentTool === 'brush' ? brushTool : 
+                       currentTool === 'treat' ? treatTool : catnipTool;
+    
+    if (toolElement && toolElement.classList.contains('active')) {
+        toolElement.style.left = (e.clientX - 30) + 'px';
+        toolElement.style.top = (e.clientY - 30) + 'px';
+        toolElement.style.transform = 'none';
+    }
+}
+
+// 触发互动效果
+function triggerInteraction(toolType) {
+    interactionCount++;
+    
+    const messages = {
+        brush: [`${kittenName}：咕噜咕噜~ 好舒服！`, `${kittenName}正在享受梳理呢~`],
+        treat: [`${kittenName}：这个猫条好香啊！`, `${kittenName}迫不及待地舔起来了`],
+        catnip: [`${kittenName}：哇！猫薄荷！`, `${kittenName}兴奋得在地上翻滚`]
+    };
+    
+    const toolMessages = messages[toolType];
+    const randomMessage = toolMessages[Math.floor(Math.random() * toolMessages.length)];
+    
+    feedback.textContent = randomMessage;
+    
+    // 小猫反应动画
+    switch (toolType) {
+        case 'brush':
+            kitten.style.animation = 'none';
+            setTimeout(() => {
+                kitten.style.animation = 'sway 2s ease-in-out';
+            }, 10);
+            break;
+        case 'treat':
+            kitten.style.animation = 'none';
+            setTimeout(() => {
+                kitten.style.animation = 'jump 0.5s ease-in-out 3';
+            }, 10);
+            break;
+        case 'catnip':
+            kitten.style.animation = 'none';
+            setTimeout(() => {
+                kitten.style.animation = 'spin 1s ease-in-out';
+            }, 10);
+            break;
+    }
+    
+    // 3秒后恢复
+    setTimeout(() => {
+        feedback.textContent = `继续和${kittenName}互动吧！试试不同的工具~`;
+        kitten.style.animation = '';
+    }, 3000);
+}
+
+// 添加动画样式
+const style = document.createElement('style');
+style.textContent = `
+@keyframes sway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+@keyframes jump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.1); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>

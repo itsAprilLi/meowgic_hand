@@ -1,0 +1,345 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Press Start 2P', monospace;
+    background: linear-gradient(135deg, #ffccf9, #99ccff);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 🏠 室内背景场景 */
+#room-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #e6f3ff 0%, #b3d9ff 50%, #8fbc8f 100%);
+    background-image: 
+        /* 地板木纹 */
+        repeating-linear-gradient(
+            90deg,
+            #deb887 0px,
+            #deb887 40px,
+            #d2b48c 40px,
+            #d2b48c 80px
+        );
+    background-size: 100% 30%, 100% 100%;
+    background-position: 0 70%, 0 0;
+    background-repeat: no-repeat, repeat;
+}
+
+/* 🪑 家具样式 */
+.furniture {
+    position: absolute;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    z-index: 2;
+}
+
+.furniture:hover {
+    transform: scale(1.05);
+}
+
+/* 沙发 */
+#sofa {
+    left: 10%;
+    top: 60%;
+    width: 200px;
+    height: 100px;
+    background: #8b4513;
+    border-radius: 20px;
+    box-shadow: inset 0 -20px 0 #654321;
+}
+
+#sofa::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    right: 20px;
+    height: 30px;
+    background: #8b4513;
+    border-radius: 15px;
+}
+
+/* 电视 */
+#tv {
+    right: 10%;
+    top: 40%;
+    width: 150px;
+    height: 90px;
+    background: #2c2c2c;
+    border: 5px solid #1a1a1a;
+    border-radius: 8px;
+}
+
+#tv::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 20px;
+    background: #000080;
+    border-radius: 4px;
+}
+
+/* 书架 */
+#bookshelf {
+    right: 5%;
+    top: 15%;
+    width: 80px;
+    height: 200px;
+    background: #8b4513;
+    border: 2px solid #654321;
+}
+
+#bookshelf::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        linear-gradient(90deg, transparent 0%, transparent 30%, #ff6b6b 30%, #ff6b6b 35%, transparent 35%),
+        linear-gradient(90deg, transparent 40%, #4ecdc4 40%, #4ecdc4 45%, transparent 45%),
+        linear-gradient(90deg, transparent 50%, #45b7d1 50%, #45b7d1 55%, transparent 55%);
+    background-size: 100% 33%;
+    background-position: 0 10%, 0 50%, 0 90%;
+    background-repeat: no-repeat;
+}
+
+/* 植物 */
+#plant {
+    left: 20%;
+    top: 30%;
+    width: 60px;
+    height: 120px;
+    background: #8b4513;
+    border-radius: 0 0 30px 30px;
+}
+
+#plant::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    background: #228b22;
+    border-radius: 50%;
+    box-shadow: 
+        -20px -10px 0 #32cd32,
+        20px -10px 0 #32cd32,
+        0 -30px 0 #228b22;
+}
+
+/* 地毯 */
+#carpet {
+    left: 40%;
+    top: 70%;
+    width: 300px;
+    height: 200px;
+    background: #dc143c;
+    border: 10px solid #b8860b;
+    border-radius: 20px;
+    background-image: 
+        radial-gradient(circle at 50% 50%, #ff6b6b 20%, transparent 20%),
+        radial-gradient(circle at 25% 25%, #ffed4e 15%, transparent 15%),
+        radial-gradient(circle at 75% 75%, #4ecdc4 15%, transparent 15%);
+    background-size: 50px 50px;
+}
+
+/* 🐱 隐藏的小猫 */
+#hidden-kitten {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 1;
+    opacity: 0.8;
+    /* 随机位置将通过JavaScript设置 */
+}
+
+/* 👓 眼镜视窗覆盖层 */
+#glasses-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* 更暗的背景 */
+    z-index: 10;
+    pointer-events: none;
+    display: none;
+    /* 添加魔法效果 */
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 105, 180, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+}
+
+#glasses-viewport {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    box-shadow:
+        0 0 0 12px rgba(255, 255, 255, 0.4),
+        0 0 20px rgba(255, 105, 180, 0.6),
+        inset 0 0 30px rgba(255, 255, 255, 0.3);
+    background: transparent;
+    /* 创建透明视窗效果 */
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    /* 添加魔法光环动画 */
+    animation: magicGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes magicGlow {
+    0% {
+        box-shadow:
+            0 0 0 12px rgba(255, 255, 255, 0.4),
+            0 0 20px rgba(255, 105, 180, 0.6),
+            inset 0 0 30px rgba(255, 255, 255, 0.3);
+    }
+    100% {
+        box-shadow:
+            0 0 0 12px rgba(255, 255, 255, 0.6),
+            0 0 30px rgba(138, 43, 226, 0.8),
+            inset 0 0 40px rgba(255, 255, 255, 0.5);
+    }
+}
+
+/* 🎉 庆祝动画 */
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes sparkle {
+    0% {
+        opacity: 1;
+        transform: scale(0) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0) rotate(360deg);
+    }
+}
+
+/* 🐱 找到小猫的高亮效果 */
+.kitten-found {
+    filter: drop-shadow(0 0 20px #ff69b4) !important;
+    animation: bounce 0.5s ease-in-out 3;
+}
+
+/* 🎮 游戏弹窗样式 */
+.window {
+    position: fixed;
+    width: 400px;
+    height: 200px;
+    top: 10%;
+    right: 10%;
+    background: #ffdde9;
+    border: 4px solid #ff9cc9;
+    box-shadow: 6px 6px 0 #f473b9;
+    border-radius: 8px;
+    z-index: 1000; /* 提高z-index确保在最上层 */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Press Start 2P', monospace;
+    user-select: none; /* 防止拖拽时选中文字 */
+}
+
+.window.hidden {
+    display: none;
+}
+
+.window-header {
+    background: #ff99cc;
+    color: white;
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8em;
+    cursor: move;
+}
+
+.close-btn {
+    border: none;
+    background: #ff99cc;
+    color: white;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 2px;
+    font-family: 'Press Start 2P', monospace;
+}
+
+.close-btn:hover {
+    background: #ff77aa;
+}
+
+.window-body {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dialogue-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dialogue-text {
+    flex: 1;
+    font-size: 0.6em;
+    line-height: 1.5;
+    color: #333;
+}
+
+#start-search-btn,
+#next-stage-btn {
+    padding: 8px 16px;
+    background: #ffc2e0;
+    border: 2px solid #d6336c;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6em;
+    align-self: flex-end;
+}
+
+#start-search-btn:hover,
+#next-stage-btn:hover {
+    background: #ff99cc;
+}
+
+/* 🎯 找到小猫时的高亮效果 */
+.kitten-found {
+    animation: foundKitten 2s ease-in-out infinite;
+}
+
+@keyframes foundKitten {
+    0%, 100% { 
+        transform: scale(1); 
+        filter: brightness(1);
+    }
+    50% { 
+        transform: scale(1.2); 
+        filter: brightness(1.5) hue-rotate(30deg);
+    }
+} 

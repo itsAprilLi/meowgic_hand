@@ -23,7 +23,7 @@ body, html {
 
   /* 🌟 弹窗样式 */
 .window {
-    position: absolute;
+    position: fixed; /* 改为fixed确保始终显示 */
     width: 1000px;
     height: 650px;
     top: 50%;
@@ -37,6 +37,11 @@ body, html {
     user-select: none;
     display: flex;
     flex-direction: column;
+    z-index: 1000; /* 确保在最顶层 */
+  }
+
+  .window.dragging {
+    transform: none; /* 拖拽时移除居中变换 */
   }
   
   /* 🌟 弹窗头部 */
@@ -48,6 +53,7 @@ body, html {
     justify-content: space-between;
     align-items: center;
     font-size: 1em;
+    cursor: move; /* 添加拖拽cursor */
   }
   
   .close-btn {
@@ -55,6 +61,12 @@ body, html {
     background: #ff99cc;
     color: white;
     cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+  
+  .close-btn:hover {
+    background: #ff77aa;
   }
   
   /* 🌟 弹窗内容区域 */

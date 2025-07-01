@@ -1,0 +1,455 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Press Start 2P', monospace;
+    background: linear-gradient(135deg, #ffccf9, #99ccff);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 🎮 撸猫游戏场景 */
+#pet-scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        /* 温馨的室内背景 */
+        radial-gradient(circle at 30% 70%, rgba(255, 182, 193, 0.3) 20%, transparent 20%),
+        radial-gradient(circle at 70% 30%, rgba(173, 216, 230, 0.3) 15%, transparent 15%),
+        linear-gradient(135deg, #fff0f5, #f0f8ff);
+}
+
+/* 🐱 小猫形象 */
+#kitten {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: auto;
+    z-index: 5;
+    transition: all 0.5s ease;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+}
+
+/* 小猫状态动画 */
+.kitten-happy {
+    animation: happyBounce 1s ease-in-out;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2)) hue-rotate(30deg) brightness(1.2);
+}
+
+.kitten-excited {
+    animation: excitedSpin 2s ease-in-out;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2)) saturate(1.5) brightness(1.3);
+}
+
+.kitten-content {
+    animation: contentFloat 3s ease-in-out infinite;
+}
+
+@keyframes happyBounce {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); }
+}
+
+@keyframes excitedSpin {
+    0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+    25% { transform: translate(-50%, -50%) rotate(10deg) scale(1.1); }
+    50% { transform: translate(-50%, -50%) rotate(-10deg) scale(0.9); }
+    75% { transform: translate(-50%, -50%) rotate(5deg) scale(1.05); }
+    100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+}
+
+@keyframes contentFloat {
+    0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+    50% { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+/* 🛠️ 互动工具 */
+.tool {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    z-index: 15;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+
+    /* Emoji工具样式 */
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: 3px solid #ff69b4;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+}
+
+.tool.hidden {
+    opacity: 0;
+    transform: scale(0);
+    display: none !important;
+}
+
+.tool.active {
+    opacity: 1;
+    transform: scale(1);
+    display: flex !important;
+    animation: toolPulse 2s ease-in-out infinite;
+}
+
+@keyframes toolPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); filter: brightness(1.2); }
+}
+
+/* 📹 摄像头视图 */
+.input_video,
+.output_canvas {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 200px;
+    height: 150px;
+    border: 3px solid #ff99cc;
+    border-radius: 8px;
+    z-index: 4;
+    transform: scaleX(-1);
+    background: rgba(0,0,0,0.1);
+}
+
+.input_video {
+    display: none;
+}
+
+/* 🎮 教学指导弹窗 */
+.window {
+    position: fixed;
+    width: 500px;
+    height: 400px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffdde9;
+    border: 4px solid #ff9cc9;
+    box-shadow: 8px 8px 0 #f473b9;
+    border-radius: 12px;
+    z-index: 1000; /* 提高z-index确保在最上层 */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Press Start 2P', monospace;
+    user-select: none; /* 防止拖拽时选中文字 */
+}
+
+.window.hidden {
+    display: none;
+}
+
+.window-header {
+    background: #ff99cc;
+    color: white;
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9em;
+    cursor: move;
+    border-radius: 8px 8px 0 0;
+}
+
+.close-btn {
+    border: none;
+    background: #ff99cc;
+    color: white;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.8em;
+}
+
+.close-btn:hover {
+    background: #ff77aa;
+}
+
+.window-body {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 🤲 手势指导 */
+.gesture-guide {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #ffb3d9;
+}
+
+.gesture-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 8px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #ff99cc;
+}
+
+.gesture-icon {
+    font-size: 2em;
+    width: 50px;
+    text-align: center;
+}
+
+.gesture-text {
+    font-size: 0.7em;
+    color: #333;
+    flex: 1;
+}
+
+/* 💬 对话容器 */
+.dialogue-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dialogue-text {
+    font-size: 0.7em;
+    line-height: 1.6;
+    color: #333;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ffb3d9;
+}
+
+#start-petting-btn {
+    padding: 10px 20px;
+    background: #ffc2e0;
+    border: 3px solid #d6336c;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7em;
+    align-self: center;
+    transition: all 0.2s ease;
+}
+
+#start-petting-btn:hover {
+    background: #ff99cc;
+    transform: scale(1.05);
+}
+
+/* 📱 反馈弹窗 */
+#feedback-window {
+    width: 350px;
+    height: 150px;
+    top: 10%;
+    left: 10%;
+    transform: none;
+}
+
+#feedback-text {
+    font-size: 0.6em;
+    text-align: center;
+    animation: feedbackPulse 2s ease-in-out infinite;
+}
+
+@keyframes feedbackPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* 🎯 手势识别状态指示 */
+.gesture-detected {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.9);
+    border: 3px solid #ff99cc;
+    border-radius: 50%;
+    padding: 20px;
+    font-size: 2em;
+    z-index: 15;
+    animation: gestureDetected 1s ease-out;
+}
+
+@keyframes gestureDetected {
+    0% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.5); 
+    }
+    50% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1.2); 
+    }
+    100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(1); 
+    }
+}
+
+/* 🌟 特效粒子 */
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #ff99cc;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particle 2s ease-out forwards;
+}
+
+@keyframes particle {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0) translateY(-50px);
+    }
+}
+
+/* 💖 爱心特效 */
+.heart-effect {
+    position: absolute;
+    font-size: 20px;
+    color: #ff69b4;
+    pointer-events: none;
+    animation: heartFloat 3s ease-out forwards;
+    z-index: 10;
+}
+
+@keyframes heartFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+    }
+}
+
+/* 🎮 小猫状态样式 */
+.kitten-content {
+    filter: brightness(1.1) saturate(1.2);
+}
+
+.kitten-happy {
+    filter: brightness(1.3) saturate(1.4) hue-rotate(10deg);
+}
+
+.kitten-excited {
+    filter: brightness(1.4) saturate(1.6) hue-rotate(20deg);
+}
+
+/* 🎭 小猫动画效果 */
+@keyframes sway {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+@keyframes jump {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.1); }
+}
+
+@keyframes crazyRoll {
+    0% { transform: rotate(0deg) scale(1); }
+    25% { transform: rotate(90deg) scale(1.2); }
+    50% { transform: rotate(180deg) scale(1); }
+    75% { transform: rotate(270deg) scale(1.2); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+    }
+}
+
+/* 🌟 组合技动画 */
+@keyframes ultimateCombo {
+    0% { transform: scale(1) rotate(0deg); filter: hue-rotate(0deg); }
+    25% { transform: scale(1.3) rotate(90deg); filter: hue-rotate(90deg); }
+    50% { transform: scale(1.1) rotate(180deg); filter: hue-rotate(180deg); }
+    75% { transform: scale(1.4) rotate(270deg); filter: hue-rotate(270deg); }
+    100% { transform: scale(1) rotate(360deg); filter: hue-rotate(360deg); }
+}
+
+@keyframes tripleEffect {
+    0%, 100% { transform: scale(1); }
+    33% { transform: scale(1.2) rotate(10deg); }
+    66% { transform: scale(1.2) rotate(-10deg); }
+}
+
+@keyframes rainbowFloat {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(1.3) rotate(360deg);
+    }
+}
+
+@keyframes starTwinkle {
+    0% {
+        opacity: 1;
+        transform: scale(0) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.5) rotate(180deg);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0) rotate(360deg);
+    }
+}
+
+/* 🏆 成就动画 */
+@keyframes slideInRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}

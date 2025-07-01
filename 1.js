@@ -35,11 +35,13 @@ enterBtn.addEventListener('click', () => {
 // Next
 nextBtn.addEventListener('click', () => {
   if (typingInterval) {
+    // 如果正在打字，立即完成当前文字显示
     clearInterval(typingInterval);
     const textElement = dialogues[currentStep].element.querySelector('.dialogue-text');
     textElement.textContent = dialogues[currentStep].text;
     typingInterval = null;
   } else {
+    // 进入下一步
     currentStep++;
     if (currentStep < dialogues.length) {
       showStep(currentStep);
@@ -82,13 +84,24 @@ function showStep(index) {
 
 // 打字机效果
 function startTyping(element, text) {
+  // 清除之前的打字机效果
+  if (typingInterval) {
+    clearInterval(typingInterval);
+    typingInterval = null;
+  }
+
   element.textContent = "";
   let i = 0;
   typingInterval = setInterval(() => {
-    element.textContent += text[i];
-    if (i % 2 === 0) { typeSound.currentTime = 0; typeSound.play(); }
-    i++;
-    if (i >= text.length) {
+    if (i < text.length) {
+      element.textContent += text[i];
+      // 播放打字音效
+      if (i % 2 === 0 && typeSound) {
+        typeSound.currentTime = 0;
+        typeSound.play().catch(e => console.log("音效播放被阻止:", e));
+      }
+      i++;
+    } else {
       clearInterval(typingInterval);
       typingInterval = null;
     }
@@ -104,32 +117,68 @@ function startTyping(element, text) {
     windowOffset++;
 }
 
-// 关闭按钮
+// 关闭按钮 - 修改为最小化而不是隐藏
 closeBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.parentElement.parentElement.classList.add('hidden');
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const window = btn.closest('.window');
+    // 最小化到屏幕角落而不是完全隐藏
+    window.style.top = '10px';
+    window.style.right = '10px';
+    window.style.left = 'auto';
+    window.style.transform = 'scale(0.8)';
+    window.style.opacity = '0.7';
   });
 });
 
-// 拖动窗口
-let isDragging = false, offsetX, offsetY;
-document.addEventListener('mousedown', (e) => {
-  if (e.target.classList.contains('window-header')) {
-    isDragging = true;
-    const windowBox = e.target.parentElement;
-    offsetX = e.clientX - windowBox.offsetLeft;
-    offsetY = e.clientY - windowBox.offsetTop;
+// 改进的拖动窗口逻辑
+let isDragging = false, offsetX, offsetY, currentWindow = null;
 
-    document.onmousemove = (e) => {
-      if (isDragging) {
-        windowBox.style.left = `${e.clientX - offsetX}px`;
-        windowBox.style.top = `${e.clientY - offsetY}px`;
-      }
-    };
-    document.onmouseup = () => {
-      isDragging = false;
-      document.onmousemove = null;
-      document.onmouseup = null;
-    };
+document.addEventListener('mousedown', (e) => {
+  const windowHeader = e.target.closest('.window-header');
+  if (windowHeader && !e.target.classList.contains('close-btn')) {
+    isDragging = true;
+    currentWindow = windowHeader.closest('.window');
+
+    // 重置窗口样式（如果之前被最小化）
+    currentWindow.style.transform = 'scale(1)';
+    currentWindow.style.opacity = '1';
+
+    const rect = currentWindow.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+
+    // 提升当前窗口的z-index
+    currentWindow.style.zIndex = 1001;
+
+    e.preventDefault();
+  }
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (isDragging && currentWindow) {
+    let newLeft = e.clientX - offsetX;
+    let newTop = e.clientY - offsetY;
+
+    // 限制窗口在屏幕边界内
+    const maxLeft = window.innerWidth - currentWindow.offsetWidth;
+    const maxTop = window.innerHeight - currentWindow.offsetHeight;
+
+    newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+    newTop = Math.max(0, Math.min(newTop, maxTop));
+
+    currentWindow.style.left = newLeft + 'px';
+    currentWindow.style.top = newTop + 'px';
+    currentWindow.style.right = 'auto'; // 重置right属性
+  }
+});
+
+document.addEventListener('mouseup', () => {
+  if (isDragging) {
+    isDragging = false;
+    if (currentWindow) {
+      currentWindow.style.zIndex = 1000; // 恢复正常z-index
+    }
+    currentWindow = null;
   }
 });

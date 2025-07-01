@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Your Kitten - Meowgic Hand</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pet-cat.css">
+</head>
+<body>
+  <!-- 撸猫游戏场景 -->
+  <div id="pet-scene">
+    <!-- 小猫形象 -->
+    <img id="kitten" src="" alt="Your Kitten">
+    
+    <!-- 互动工具（根据手势显示） -->
+    <div id="brush-tool" class="tool hidden">🖌️</div>
+    <div id="treat-tool" class="tool hidden">🐟</div>
+    <div id="catnip-tool" class="tool hidden">🌿</div>
+    
+    <!-- 摄像头视图 -->
+    <video class="input_video" autoplay muted></video>
+    <canvas class="output_canvas" width="640" height="480"></canvas>
+  </div>
+
+  <!-- 教学指导弹窗 -->
+  <div class="window" id="tutorial-window">
+    <div class="window-header">
+      <span>Petting Guide</span>
+      <button class="close-btn">X</button>
+    </div>
+    <div class="window-body">
+      <div class="gesture-guide">
+        <div class="gesture-item">
+          <div class="gesture-icon">✋</div>
+          <div class="gesture-text">Open Hand ➜ Brush</div>
+        </div>
+        <div class="gesture-item">
+          <div class="gesture-icon">✌️</div>
+          <div class="gesture-text">Peace Sign ➜ Cat Treat</div>
+        </div>
+        <div class="gesture-item">
+          <div class="gesture-icon">👌</div>
+          <div class="gesture-text">OK Gesture ➜ Catnip</div>
+        </div>
+      </div>
+      <div class="dialogue-container">
+        <div class="dialogue-text">Use different hand gestures to summon interactive tools and play with your kitten!</div>
+        <button id="start-petting-btn">Start Petting</button>
+        <div style="margin-top: 10px; font-size: 10px; color: #666;">
+          Test buttons:
+          <button onclick="testTool('brush')" style="margin: 2px; padding: 2px 5px; font-size: 10px;">🖌️</button>
+          <button onclick="testTool('treat')" style="margin: 2px; padding: 2px 5px; font-size: 10px;">🐟</button>
+          <button onclick="testTool('catnip')" style="margin: 2px; padding: 2px 5px; font-size: 10px;">🌿</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 互动反馈弹窗 -->
+  <div class="window hidden" id="feedback-window">
+    <div class="window-header">
+      <span>Kitten Reaction</span>
+    </div>
+    <div class="window-body">
+      <div class="dialogue-container">
+        <div class="dialogue-text" id="feedback-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 音效 -->
+  <audio id="bgm" src="bgm.mp3" loop></audio>
+  <audio id="purr-sound" src="purr.mp3"></audio>
+  <audio id="meow-sound" src="meow.mp3"></audio>
+  <audio id="happy-sound" src="good.mp3"></audio>
+  <audio id="brush-sound" src="brush.mp3"></audio>
+
+  <!-- MediaPipe 库 -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  
+  <script src="pet-cat.js"></script>
+</body>
+</html> 

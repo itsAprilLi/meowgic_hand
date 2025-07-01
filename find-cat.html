@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Kitten - Meowgic Hand</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="find-cat.css">
+</head>
+<body>
+  <!-- 背景场景 -->
+  <div id="room-background">
+    <!-- 家具元素 -->
+    <div class="furniture" id="sofa" data-sound="sofa-sound.mp3" data-text="Aww, we love watching TV together..."></div>
+    <div class="furniture" id="tv" data-sound="tv-sound.mp3" data-text="The TV is showing a cat documentary!"></div>
+    <div class="furniture" id="bookshelf" data-sound="book-sound.mp3" data-text="There are so many cat books on the shelf!"></div>
+    <div class="furniture" id="plant" data-sound="plant-sound.mp3" data-text="Naughty [xxx] always knocks it over!"></div>
+    <div class="furniture" id="carpet" data-sound="carpet-sound.mp3" data-text="The soft carpet is [xxx]'s favorite nap spot!"></div>
+    
+    <!-- 隐藏的小猫（随机位置） -->
+    <img id="hidden-kitten" src="" alt="Hidden Kitten">
+  </div>
+
+  <!-- 眼镜视窗覆盖层 -->
+  <div id="glasses-overlay">
+    <div id="glasses-viewport"></div>
+  </div>
+
+  <!-- 游戏界面弹窗 -->
+  <div class="window" id="find-cat-window">
+    <div class="window-header">
+      <span>Find Your Kitten</span>
+      <button class="close-btn">X</button>
+    </div>
+    <div class="window-body">
+      <div class="dialogue-container">
+        <div class="dialogue-text">Use hand gestures to control the magic glasses and find your hidden kitten!</div>
+        <button id="start-search-btn">Start Search</button>
+        <div style="margin-top: 10px; font-size: 8px; color: #666;">
+          Gestures: ✋ Open hand = Move glasses | 👌 OK = Search here
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成功找到小猫的提示弹窗 -->
+  <div class="window hidden" id="success-window">
+    <div class="window-header">
+      <span>Found!</span>
+    </div>
+    <div class="window-body">
+      <div class="dialogue-container">
+        <div class="dialogue-text"></div>
+        <button id="next-stage-btn">Pet the Cat!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 摄像头视图 -->
+  <video class="input_video" autoplay muted style="display: none;"></video>
+  <canvas class="output_canvas" width="640" height="480" style="display: none; position: fixed; top: 10px; right: 10px; width: 200px; height: 150px; z-index: 1001; border: 2px solid #ff69b4;"></canvas>
+
+  <!-- 音效 -->
+  <audio id="bgm" src="bgm.mp3" loop></audio>
+  <audio id="success-sound" src="good.mp3"></audio>
+  <audio id="meow-sound" src="meow.mp3"></audio>
+  <audio id="furniture-sound"></audio>
+
+  <!-- MediaPipe 库 -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <script src="find-cat.js"></script>
+</body>
+</html> 

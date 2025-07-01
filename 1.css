@@ -69,15 +69,16 @@ body, html {
   }
   
   .window {
-    position: absolute;
+    position: fixed; /* 改为fixed，确保窗口相对于视口定位 */
     top: 20%;
     left: 30%;
     width: 300px;
     background: #fff;
     border: 2px solid #ff99cc;
     box-shadow: 4px 4px 0 #d6336c;
-    z-index: 2;
+    z-index: 1000; /* 提高z-index确保在最上层 */
     font-family: 'Press Start 2P', monospace;
+    user-select: none; /* 防止拖拽时选中文字 */
   }
   
   .hidden {
